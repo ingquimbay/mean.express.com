@@ -17,6 +17,9 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var passport = require('passport');
 
+var localStrategy = require('passport-local').Strategy;
+var Users = require('./models/users');
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -74,6 +77,8 @@ app.use(function (err, req, res, next) {
 mongoose.connect(config.mongodb, {
   userNewUrlParser: true
 });
+
+passport.use(Users.createStrategy());
 
 passport.serializeUser(function (user, done) {
   done(null, {
