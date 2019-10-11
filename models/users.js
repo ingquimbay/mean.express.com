@@ -21,12 +21,26 @@ var Users = new Schema({
     default: false
   },
   created: {
-      type: Date,
-      default: Date.now
+    type: Date,
+    default: Date.now
   },
   modified: {
-      type: Date,
-      default: Date.now
+    type: Date,
+    default: Date.now
+  },
+  hash: {
+    type: String,
+    required: [
+      true,
+      'There was a problem creating your password'
+    ]
+  },
+  salt: {
+    type: String,
+    required: [
+      true,
+      'There was a problem creating your password'
+    ]
   }
 });
 
@@ -34,8 +48,8 @@ var Users = new Schema({
 Users.plugin(uniqueValidator);
 
 Users.pre('save', function (next) {
-    this.modified = new Date().toISOString();
-    next();
+  this.modified = new Date().toISOString();
+  next();
 });
 
 module.exports = mongoose.model('Users', Users);
