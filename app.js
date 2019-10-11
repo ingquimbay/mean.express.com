@@ -71,11 +71,25 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
-
 mongoose.connect(config.mongodb, {
   userNewUrlParser: true
 });
 
+passport.serializeUser(function (user, done) {
+  done(null, {
+    id: user._id,
+    username: user.username,
+    email: user.email,
+    first_name: user.first_name,
+    last_name: user.last_name
+  });
+});
+
+passport.deserializeUser(function (user, done) {
+  done(null, user);
+});
+
 console.log("connected to ");
 console.log(config);
+
+module.exports = app;
