@@ -20,6 +20,8 @@ var passport = require('passport');
 var localStrategy = require('passport-local').Strategy;
 var Users = require('./models/users');
 
+var apiAuthRouther = require('./routes/api/auth');
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -35,7 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(require('express-session')({
   // define the session store
   store: new MongoStore({
-    mongooseConnection: mongoose.connection;
+    mongooseConnection: mongoose.connection
   }),
   // set the secret
   secret: config.session.secret,
@@ -57,6 +59,7 @@ app.use(passport.session());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/api/users', apiUsersRouter);
+app.use('/api/auth', apiAuthRouther);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
