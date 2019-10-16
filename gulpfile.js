@@ -47,15 +47,15 @@ gulp.task('build-auth-js', function () {
 
 //Recompile SCSS/JS on save
 gulp.task('watch', function () {
-  gulp.watch('./src/scss/**/*.scss', ['build-css']);
-  gulp.watch('./src/js/**/*.js', ['build-js']);
+  gulp.watch('./src/scss/**/*.scss', gulp.series('build-css'));
+  gulp.watch('./src/js/**/*.js', gulp.series('build-js'));
 });
 
 //Run a watcher by default
 gulp.task('default', gulp.series('watch'));
 
 //Compile all JS tasks
-gulp.task('build-js', gulp.series('build-main-js', 'build-auth-js'));
+gulp.task('build-js', gulp.parallel('build-main-js', 'build-auth-js'));
 
 //Compile all CSS tasks
 gulp.task('build-css', gulp.series('build-main-css'));
