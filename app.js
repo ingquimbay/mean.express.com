@@ -80,6 +80,12 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
+// Working with Session Data
+app.use(function (req, res, next) {
+  res.locals.session = req.session;
+  next();
+});
+
 mongoose.connect(config.mongodb, {
   userNewUrlParser: true
 });
