@@ -47,7 +47,7 @@ gulp.task('build-auth-js', function () {
 
 gulp.task('build-users-js', function () {
 
-  var userApp = gulp.src(['src/js/user.app.js'])
+  var userApp = gulp.src(['src/js/users.app.js'])
     .pipe(concat('users.app.min.js'))
     .pipe(uglify())
     .pipe(gulp.dest('public/dist/js'));

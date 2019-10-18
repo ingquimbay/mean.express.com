@@ -24,6 +24,11 @@ var apiAuthRouther = require('./routes/api/auth');
 
 var authRouter = require('./routes/auth');
 
+// connect to MongoDB
+mongoose.connect(config.mongodb, {
+  userNewUrlParser: true
+});
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -57,30 +62,23 @@ app.use(require('express-session')({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// routes
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/api/users', apiUsersRouter);
-app.use('/api/auth', apiAuthRouther);
-app.use('/auth', authRouter);
-
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(createError(404));
-});
-
-// error handler
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
-
 // Working with Session Data
+passport.use(Users.createStrategy());
+
+passport.serializeUser(function (user, done) {
+  done(null, {
+    id: user._id,
+    username: user.username,
+    email: user.email,
+    first_name: user.first_name,
+    last_name: user.last_name
+  });
+});
+
+passport.deserializeUser(function (user, done) {
+  done(null, user);
+});
+
 app.use(function (req, res, next) {
   res.locals.session = req.session;
   next();
@@ -133,24 +131,27 @@ app.use(function (req, res, next) {
   return res.redirect('/auth#login');
 });
 
-mongoose.connect(config.mongodb, {
-  userNewUrlParser: true
+// routes
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+app.use('/api/users', apiUsersRouter);
+app.use('/api/auth', apiAuthRouther);
+app.use('/auth', authRouter);
+
+// catch 404 and forward to error handler
+app.use(function (req, res, next) {
+  next(createError(404));
 });
 
-passport.use(Users.createStrategy());
+// error handler
+app.use(function (err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-passport.serializeUser(function (user, done) {
-  done(null, {
-    id: user._id,
-    username: user.username,
-    email: user.email,
-    first_name: user.first_name,
-    last_name: user.last_name
-  });
-});
-
-passport.deserializeUser(function (user, done) {
-  done(null, user);
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
 });
 
 console.log("connected to ");

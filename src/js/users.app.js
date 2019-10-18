@@ -64,7 +64,7 @@ var usersApp = (function () {
     load: function () {
       alert('USERS LOADED');
       // load all users from database
-      //viewUsers();
+      // viewUsers();
       let hash = window.location.hash;
       let hashArray = hash.split('-');
 
